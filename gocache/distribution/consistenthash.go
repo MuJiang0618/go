@@ -4,6 +4,7 @@ import (
 	"../cache"
 	"github.com/julienschmidt/httprouter"
 	"hash/crc32"
+	"log"
 	"net/http"
 	"sort"
 	"strconv"
@@ -63,30 +64,9 @@ func init() {
 	groups["group3"] = cache.NewGroup("group3", 2 << 10, nil)
 	groups["group3"].Add("lh", "lk")
 }
-// 根据查询的key返回真实节点的名字
-//func (m *Map) Get(key string) string {
-//	if len(m.keys) == 0 {
-//		return ""
-//	}
-//
-//	hash := int(m.hashFunc([]byte(key)))
-//	// Binary search for appropriate replica.
-//	idx := sort.Search(len(m.keys), func(i int) bool {		// 找到key对应的虚拟节点的位置
-//		return m.keys[i] >= hash
-//	})
-//
-//	return m.hashMap[m.keys[idx%len(m.keys)]]		// return真实节点的名字
-//}
-//
-//func startCacheServer(addr string, addrs []string, gee *geecache.Group) {
-//	peers := geecache.NewHTTPPool(addr)		// 第一个参数是主节点地址
-//	peers.Set(addrs...)		// 注册从节点
-//	gee.RegisterPeers(peers)
-//	log.Println("geecache is running at", addr)
-//	log.Fatal(http.ListenAndServe(addr[7:], peers))
-//}
 
 func RemoteGet(w http.ResponseWriter, r *http.Request, param httprouter.Params) {
+	log.Printf("发起了一次http请求")
 	groupName := r.URL.Query().Get("groupName")
 	group, ok := groups[groupName]
 	if ok {
